@@ -25,7 +25,7 @@ function islandora_solr_facet_pages_admin_settings(&$form_state) {
   
   // get fields from variable
   $fields_data = variable_get('islandora_solr_facet_pages_fields_data', array());
-  
+
   // add 3 empty fields
   for ($i = 1; $i <= 3; $i++) {
     $fields_data[] = array('');
@@ -40,11 +40,11 @@ function islandora_solr_facet_pages_admin_settings(&$form_state) {
       ),
       'label' => array(
         '#type' => 'textfield',
-        '#default_value' => isset($value['label']) ? $value['solr_field'] : '',
+        '#default_value' => isset($value['label']) ? $value['label'] : '',
       ),
       'path' => array(
         '#type' => 'textfield',
-        '#default_value' => isset($value['path']) ? $value['solr_field'] : '',
+        '#default_value' => isset($value['path']) ? $value['path'] : '',
       ),
     );
     $fields[] = $field;
