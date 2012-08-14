@@ -120,24 +120,10 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $prefix) {
   // facet queries
   $facet_queries = $result_object->facet_counts->facet_queries;
 
-  // render current and all counts
-  $count_all = 0;
-  foreach ($facet_queries as $filter => $bucket_size) {
-    $count_all += $bucket_size;
-    
-    if ($fq_map[$filter] == $prefix) {
-      $count_current = $bucket_size;
-    }
-  } 
-
   // return array
   return array(
     'facet_queries' => $facet_queries,
     'fq_map' => $fq_map,
-    'count' => array(
-      'all' => $count_all,
-      'current' => $count_current
-    ),
   );
 }
 
@@ -148,13 +134,7 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $prefix) {
 
 
 function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix) {
-  
-  $params = $_GET;
-  unset($params['q']);
 
-  // get page limit
-  $limit = variable_get('islandora_solr_facet_pages_limit', 25);
-  
   // get the actual results.
   $query = "$solr_field:[* TO *]";
   if ($q !== NULL) {
@@ -167,17 +147,9 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix) {
     'facet.field' => $solr_field,
     'facet.sort' => 'index',
     'facet.mincount' => 1,
-    'facet.limit' => (empty($limit) OR $limit == 0) ? 10000 : $limit,
-//    'facet.missing' => true,
+    'facet.limit' => 10000,
     'qt' => variable_get('islandora_solr_search_block_request_handler', 'standard'),
   );
-  // set offset
-  if ($params['page']) {
-    $facet_params['facet.offset'] = $params['page'] * $limit;
-  }
-  else {
-    $facet_params['facet.offset'] = 0;
-  }
   
   // set the facet prefix
   if ($prefix != t('ALL')) {
@@ -187,20 +159,40 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix) {
   // solr results in json format
   $result_object = json_decode($solr->search($query, 0, 0, $facet_params)->getRawResponse());
 
-  // collect results
-  $results = array();
-  foreach ($result_object->facet_counts->facet_fields->$solr_field as $value => $count) {
-    $results[] = array(
-      'value' => $value,
-      'count' => $count,
-    );
-  }
+  $fields = (array) $result_object->facet_counts->facet_fields->$solr_field;
   
-  // return results array
-  return $results;
+  return $fields;
 }
 
 
+
+function _islandora_solr_facet_pages_pager($result_fields = array()) {
+  // set variables
+  $offset = 0;
+
+  // get url parameters
+  $params = $_GET;
+  unset($params['q']);
+
+  // get page limit
+  $limit = variable_get('islandora_solr_facet_pages_limit', 25);
+  if (!empty($limit) AND $limit != 0) {
+    
+    // total
+    $total = count($result_fields);
+
+    // offset
+    $offset = $params['page'] ? $params['page'] * $limit : 0;
+
+    // pager init
+    islandora_solr_search_pager_init($total, $limit);
+  }
+
+  return array(
+    'limit' => $limit,
+    'offset' => $offset,
+  );
+}
 
 
 
@@ -254,27 +246,18 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL) {
   $letterer = theme('islandora_solr_facet_pages_letterer', $letterer_arr['facet_queries'], $letterer_arr['fq_map'], $prefix, $path);
   
   // render results
-  $results_arr = _islandora_solr_facet_pages_results($solr, $solr_field, $prefix);
-  $results = theme('islandora_solr_facet_pages_results', $results_arr, $solr_field, $path);
+  $result_fields = _islandora_solr_facet_pages_results($solr, $solr_field, $prefix);
+  // set up pager
+  $pager_arr = _islandora_solr_facet_pages_pager($result_fields);
+  $offset = $pager_arr['offset'];
+  $limit = $pager_arr['limit'];
+
+  // slice array
+  $results = array_slice($result_fields, $offset, $limit);
+  $results = theme('islandora_solr_facet_pages_results', $results, $solr_field, $path);
 
   // render pager
-  // init pager
-  $limit = variable_get('islandora_solr_facet_pages_limit', 25);
-  if (!empty($limit) AND $limit != 0) {
-    if ($prefix == t('ALL')) {
-      $total = $letterer_arr['count']['all'];
-    }
-    else {
-      $total = $letterer_arr['count']['current'];
-    }
-
-
-    islandora_solr_search_pager_init($total, $limit);
-    $pager = theme('pager', array(), $limit, 0, NULL, 5);
-  }
-  else {
-    $pager = NULL;
-  }
+  $pager = theme('pager', array(), $limit, 0, NULL, 5);
   
   return theme('islandora_solr_facet_pages_wrapper', $letterer, $results, $pager, $path);;
 }
