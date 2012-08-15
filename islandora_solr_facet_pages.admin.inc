@@ -168,6 +168,15 @@ function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
     case t('Reset to defaults'):
       // empty variables
 
+      // remove variables
+      $variables = array(
+        'islandora_solr_facet_pages_fields_data',
+        'islandora_solr_facet_pages_limit',
+      );
+      foreach ($variables as $variable) {
+        variable_del($variable);
+      }
+      
       drupal_set_message(t('The configuration options have been reset to their default values.'));
       break;
   }
