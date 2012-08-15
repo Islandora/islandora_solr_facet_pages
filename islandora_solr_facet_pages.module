@@ -30,7 +30,7 @@ function islandora_solr_facet_pages_menu() {
       'page arguments' => array('islandora_solr_facet_pages_admin_settings'),
       'access arguments' => array('administer site configuration'),
       'file' => 'islandora_solr_facet_pages.admin.inc',
-      'type' => MENU_NORMAL_ITEM,
+      'type' => MENU_LOCAL_TASK,
   );
 
   return $items;
