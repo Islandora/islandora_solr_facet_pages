@@ -22,6 +22,15 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_result
  */
 function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrapper(&$variables) {
 
+  $total = $variables['pager_data']['total'];
+  $from = $variables['pager_data']['offset'] + 1;
+  $to = $variables['pager_data']['offset'] + $variables['pager_data']['limit'];
+  if ($to > $total) {
+    $to = $total;
+  }
+
+  $variables['results_count'] = t('Showing @from - @to of @total', array('@from' => $from, '@to' => $to, '@total' => $total));
+
   // add template suggestion based on path name
   $variables['template_files'][] =  'islandora-solr-facet-pages-wrapper--' . $variables['path'];
 }
@@ -53,7 +62,7 @@ function theme_islandora_solr_facet_pages_letterer($facet_queries, $fq_map, $pre
   $output = '<ul class="islandora-solr-facet-pages-letterer">';
   // li: ALL
   $output .= '<li class="letter' . ((t('ALL') == $prefix) ? ' active' : '') . '">';
-  $output .= '<a href="' . url('browse/' . $path) . '">' . t('ALL') . '</a>';
+  $output .= '<a href="' . url('browse/' . $path) . '" title="' . t('Browse all') . '">' . t('ALL') . '</a>';
   $output .= '</li>';
 
   // loop over facet queries to render letters
@@ -65,7 +74,7 @@ function theme_islandora_solr_facet_pages_letterer($facet_queries, $fq_map, $pre
     // create link if facet bucket is not empty
     if ($count > 0) {
       $url = 'browse/' . $path . '/' . $value;
-      $output .= '<a href="' . url($url) . '">' . $value . '</a>';
+      $output .= '<a href="' . url($url) . '" title="' . t('Browse starting with @letter', array('@letter' => $value)) . '">' . $value . '</a>';
     }
     else {
       $output .= $value;

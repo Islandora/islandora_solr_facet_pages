@@ -54,7 +54,8 @@ function islandora_solr_facet_pages_theme() {
               'letterer' => NULL,
               'results' => NULL,
               'pager' => NULL,
-              'path' => NULL
+              'path' => NULL,
+              'pager_data' => array()
           ),
       ),
       'islandora_solr_facet_pages_results' => array(
@@ -82,6 +83,35 @@ function islandora_solr_facet_pages_theme() {
       ),
   );
 }
+
+
+
+
+/**
+ * Implementation of hook_block().
+ */
+function islandora_solr_facet_pages_block($op = 'list', $delta = '', $edit = array()) {
+  // switch operation
+  switch ($op) {
+    case 'list':
+      $blocks['islandora-solr-facet-pages'] = array(
+        'info'       => t('Islandora solr facet pages'),
+      );
+      return $blocks;
+    case 'view':
+      switch ($delta) {
+        case 'islandora-solr-facet-pages':
+          // subject
+          $block['subject'] = t('Islandora solr facet pages');
+          $block['content'] = _islandora_solr_facet_pages_block_callback();
+          break;
+      }
+      return $block;
+  }
+}
+
+
+
 
 /**
  * Performs a solr query to get facets fields for the alphabetical pager. It
@@ -178,16 +208,26 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix) {
   return $fields;
 }
 
+/**
+ * Prepares data to render the pager
+ *
+ * @param array $result_fields
+ *   An array containing all the results
+ * @return array
+ *   Returns an array containing values to configure and render the pager.
+ *   Limit, offset and total.
+ */
 function _islandora_solr_facet_pages_pager($result_fields = array()) {
   // set variables
+  $limit = variable_get('islandora_solr_facet_pages_limit', 25);
   $offset = 0;
+  $total = NULL;
 
   // get url parameters
   $params = $_GET;
   unset($params['q']);
 
   // get page limit
-  $limit = variable_get('islandora_solr_facet_pages_limit', 25);
   if (!empty($limit) AND $limit != 0) {
 
     // total
@@ -203,6 +243,7 @@ function _islandora_solr_facet_pages_pager($result_fields = array()) {
   return array(
       'limit' => $limit,
       'offset' => $offset,
+      'total' => $total
   );
 }
 
@@ -251,9 +292,9 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL) {
   // render results
   $result_fields = _islandora_solr_facet_pages_results($solr, $solr_field, $prefix);
   // set up pager
-  $pager_arr = _islandora_solr_facet_pages_pager($result_fields);
-  $offset = $pager_arr['offset'];
-  $limit = $pager_arr['limit'];
+  $pager_data = _islandora_solr_facet_pages_pager($result_fields);
+  $offset = $pager_data['offset'];
+  $limit = $pager_data['limit'];
 
   // slice array
   $results = array_slice($result_fields, $offset, $limit);
@@ -262,7 +303,7 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL) {
   // render pager
   $pager = theme('pager', array(), $limit, 0, NULL, 5);
 
-  return theme('islandora_solr_facet_pages_wrapper', $letterer, $results, $pager, $path);
+  return theme('islandora_solr_facet_pages_wrapper', $letterer, $results, $pager, $path, $pager_data);
   ;
 }
 
@@ -290,4 +331,25 @@ function islandora_solr_facet_pages_access_callback($path = NULL) {
   }
 
   return FALSE;
+}
+
+
+/**
+ * Callback function to populate the facet page block with links to all
+ * configured facet pages.
+ *
+ * @return string
+ *   Returns a rendered bulletted list with links to all configured facet pages
+ */
+function _islandora_solr_facet_pages_block_callback() {
+  // get available fields from variable
+  $fields = variable_get('islandora_solr_facet_pages_fields_data', array());
+
+  $items = array();
+  foreach ($fields as $key => $value) {
+
+    $items[] = l($value['label'], 'browse/' . $value['path'], array('attributes' => array('title' => $value['label'])));
+  }
+
+  return theme('item_list', $items, NULL, 'ul', array('class' => 'islandora-solr-facet-pages-list'));
 }
