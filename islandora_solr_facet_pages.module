@@ -336,7 +336,7 @@ function _islandora_solr_facet_pages_block_callback() {
   $items = array();
   foreach ($fields as $key => $value) {
 
-    $items[] = l($value['label'], 'browse' . $value['path'], array('attributes' => array('title' => $value['label'])));
+    $items[] = l($value['label'], 'browse/' . $value['path'], array('attributes' => array('title' => $value['label'])));
   }
 
   return theme('item_list', $items, NULL, 'ul', array('class' => 'islandora-solr-facet-pages-list'));
