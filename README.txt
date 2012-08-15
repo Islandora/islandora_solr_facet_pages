@@ -13,9 +13,10 @@ islandora_solr_search
 
 Instructions
 ------------
-Navigate to admin/settings/islandora_solr_search/facet_pages for configuration.
-Fill out a solr field, title and path to define a page.
-The pages are located at /browse/{your-path}
+- Navigate to admin/settings/islandora_solr_search/facet_pages for configuration.
+- Fill out a solr field, title and path to define a page.
+The pages are located at /browse/{your-path} and there is a block available
+which contains a list of links to all configured facet pages.
 
 
 Theming
