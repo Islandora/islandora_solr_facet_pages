@@ -1,28 +1,43 @@
 <?php
 
+/**
+ * @file
+ * Admin functionality
+ *
+ * Contains all admin related functionality
+ */
+
+/**
+ * Admin callback function
+ *
+ * @param array $form_state
+ *   Form state
+ * @return array
+ *   Form API array to be rendered.
+ */
 function islandora_solr_facet_pages_admin_settings(&$form_state) {
-  
+
   // include admin css file
   $admin_css = drupal_get_path('module', 'islandora_solr_facet_pages') . '/css/islandora_solr_facet_pages.admin.css';
   drupal_add_css($admin_css);
-  
+
   $form = array();
-  
+
   $form['facet_pages'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE
+      '#type' => 'fieldset',
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE
   );
 
   // fields
   $form['facet_pages']['islandora_solr_facet_pages_fields_data'] = array(
-    '#type' => 'item',
-    '#title' => t('Facet pages'),
-    '#description' => t('Configure facet pages. Save settings for additional empty fields.'),
-    '#tree' => TRUE,
-    '#theme' => 'islandora_solr_facet_pages_admin_table'
+      '#type' => 'item',
+      '#title' => t('Facet pages'),
+      '#description' => t('Configure facet pages. Save settings for additional empty fields.'),
+      '#tree' => TRUE,
+      '#theme' => 'islandora_solr_facet_pages_admin_table'
   );
-  
+
   // get fields from variable
   $fields_data = variable_get('islandora_solr_facet_pages_fields_data', array());
 
@@ -34,54 +49,53 @@ function islandora_solr_facet_pages_admin_settings(&$form_state) {
   $fields = array();
   foreach ($fields_data as $key => $value) {
     $field = array(
-      'solr_field' => array(
-        '#type' => 'textfield',
-        '#default_value' => isset($value['solr_field']) ? $value['solr_field'] : '',
-      ),
-      'label' => array(
-        '#type' => 'textfield',
-        '#default_value' => isset($value['label']) ? $value['label'] : '',
-      ),
-      'path' => array(
-        '#type' => 'textfield',
-        '#default_value' => isset($value['path']) ? $value['path'] : '',
-      ),
+        'solr_field' => array(
+            '#type' => 'textfield',
+            '#default_value' => isset($value['solr_field']) ? $value['solr_field'] : '',
+        ),
+        'label' => array(
+            '#type' => 'textfield',
+            '#default_value' => isset($value['label']) ? $value['label'] : '',
+        ),
+        'path' => array(
+            '#type' => 'textfield',
+            '#default_value' => isset($value['path']) ? $value['path'] : '',
+        ),
     );
     $fields[] = $field;
   }
-  // add fields  
+  // add fields
   $form['facet_pages']['islandora_solr_facet_pages_fields_data']['fields'] = $fields;
-  
+
   // limit results per page
   $form['facet_pages']['islandora_solr_facet_pages_limit'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Results per page'),
-    '#size' => 5,
-    '#default_value' => variable_get('islandora_solr_facet_pages_limit', 25),
-    '#description' => t('The amount of values returned per page. Leave empty to return all fields'),
+      '#type' => 'textfield',
+      '#title' => t('Results per page'),
+      '#size' => 5,
+      '#default_value' => variable_get('islandora_solr_facet_pages_limit', 25),
+      '#description' => t('The amount of values returned per page. Leave empty to return all fields'),
   );
 
   // submit
   $form['buttons']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-    '#weight' => 50,
+      '#type' => 'submit',
+      '#value' => t('Save'),
+      '#weight' => 50,
   );
   // reset
   $form['buttons']['reset'] = array(
-    '#type' => 'submit',
-    '#value' => t('Reset to defaults'),
-    '#weight' => 51,
+      '#type' => 'submit',
+      '#value' => t('Reset to defaults'),
+      '#weight' => 51,
   );
 
   return $form;
 }
 
-
 function theme_islandora_solr_facet_pages_admin_table($form) {
   // set variable
   $rows = array();
-  
+
   // render islandora_solr_primary_display_table
   foreach ($form['fields'] as $key => $elements) {
 
@@ -101,15 +115,16 @@ function theme_islandora_solr_facet_pages_admin_table($form) {
   $header[] = array('data' => t('Solr field'));
   $header[] = array('data' => t('Label'));
   $header[] = array('data' => t('Path'));
-  
+
   // render table
   $output = theme('table', $header, $rows, array('id' => 'islandora-solr-facet-pages-admin-table'));
-  
+
   return $output;
-  
 }
 
-
+/**
+ * Implements hook_validate().
+ */
 function islandora_solr_facet_pages_admin_settings_validate($form, &$form_state) {
   // on save
   if ($form_state['clicked_button']['#value'] == t('Save')) {
@@ -127,15 +142,17 @@ function islandora_solr_facet_pages_admin_settings_validate($form, &$form_state)
   }
 }
 
+/**
+ * Implements hook_submit().
+ */
 function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
-  
+
   // get operation
   $op = $form_state['clicked_button']['#value'];
-  
+
   switch ($op) {
     case t('Save'):
       // set variables
-      
       // clean up array
       $fields_data = $form_state['values']['islandora_solr_facet_pages_fields_data']['fields'];
       foreach ($fields_data as $key => $value) {
@@ -145,7 +162,7 @@ function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
       }
       variable_set('islandora_solr_facet_pages_fields_data', $fields_data);
       variable_set('islandora_solr_facet_pages_limit', trim($form_state['values']['islandora_solr_facet_pages_limit']));
-      
+
       drupal_set_message(t('The configuration options have been saved.'));
       break;
     case t('Reset to defaults'):
