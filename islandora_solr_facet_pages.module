@@ -83,6 +83,35 @@ function islandora_solr_facet_pages_theme() {
   );
 }
 
+
+
+
+/**
+ * Implementation of hook_block().
+ */
+function islandora_solr_facet_pages_block($op = 'list', $delta = '', $edit = array()) {
+  // switch operation
+  switch ($op) {
+    case 'list':
+      $blocks['islandora-solr-facet-pages'] = array(
+        'info'       => t('Islandora solr facet pages'),
+      );
+      return $blocks;
+    case 'view':
+      switch ($delta) {
+        case 'islandora-solr-facet-pages':
+          // subject
+          $block['subject'] = t('Islandora solr facet pages');
+          $block['content'] = _islandora_solr_facet_pages_block_callback();
+          break;
+      }
+      return $block;
+  }
+}
+
+
+
+
 /**
  * Performs a solr query to get facets fields for the alphabetical pager. It
  * makes use of facet queries.
@@ -290,4 +319,25 @@ function islandora_solr_facet_pages_access_callback($path = NULL) {
   }
 
   return FALSE;
+}
+
+
+/**
+ * Callback function to populate the facet page block with links to all
+ * configured facet pages.
+ *
+ * @return string
+ *   Returns a rendered bulletted list with links to all configured facet pages
+ */
+function _islandora_solr_facet_pages_block_callback() {
+  // get available fields from variable
+  $fields = variable_get('islandora_solr_facet_pages_fields_data', array());
+
+  $items = array();
+  foreach ($fields as $key => $value) {
+
+    $items[] = l($value['label'], 'browse' . $value['path'], array('attributes' => array('title' => $value['label'])));
+  }
+
+  return theme('item_list', $items, NULL, 'ul', array('class' => 'islandora-solr-facet-pages-list'));
 }
