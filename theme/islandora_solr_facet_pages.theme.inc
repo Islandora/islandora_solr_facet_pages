@@ -22,6 +22,15 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_result
  */
 function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrapper(&$variables) {
 
+  $total = $variables['pager_data']['total'];
+  $from = $variables['pager_data']['offset'] + 1;
+  $to = $variables['pager_data']['offset'] + $variables['pager_data']['limit'];
+  if ($to > $total) {
+    $to = $total;
+  }
+
+  $variables['results_count'] = t('Showing @from - @to of @total', array('@from' => $from, '@to' => $to, '@total' => $total));
+
   // add template suggestion based on path name
   $variables['template_files'][] =  'islandora-solr-facet-pages-wrapper--' . $variables['path'];
 }
