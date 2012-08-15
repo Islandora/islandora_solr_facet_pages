@@ -8,13 +8,11 @@ multiple pages for different solr fields to facet on.
 
 Dependencies
 ------------
-
 islandora_solr_search
 
 
 Instructions
 ------------
-
 Navigate to admin/settings/islandora_solr_search/facet_pages for configuration.
 Fill out a solr field, title and path to define a page.
 The pages are located at /browse/{your-path}
@@ -22,7 +20,6 @@ The pages are located at /browse/{your-path}
 
 Theming
 -------
-
 There are template files for the entire page and the results list. The
 alphabetical pager uses a theme function.
 
@@ -37,8 +34,7 @@ islandora-solr-facet-pages-results--{your-path}.tpl.php
 
 
 TODO
-====
-
+----
 - add ability to sort by number of results as well.
 - add ability to split up results in sections. eg: Aa-Ac, Ad-Ag, Ah-Aj, etc.
 - code works great, but OOP might be handier code architecture
