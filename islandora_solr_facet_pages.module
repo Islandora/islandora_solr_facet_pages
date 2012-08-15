@@ -232,7 +232,7 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL) {
   }
 
   // set default prefix
-  if ($prefix === NULL) {
+  if ($prefix == NULL) {
     $prefix = t('ALL');
   }
 
