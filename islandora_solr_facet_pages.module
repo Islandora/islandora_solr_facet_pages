@@ -228,7 +228,7 @@ function _islandora_solr_facet_pages_pager($result_fields = array()) {
   unset($params['q']);
 
   // get page limit
-  if (!empty($limit) AND $limit != 0) {
+  if (!empty($limit)) {
 
     // total
     $total = count($result_fields);
@@ -356,5 +356,11 @@ function _islandora_solr_facet_pages_block_callback() {
     $items[] = l($value['label'], 'browse/' . $value['path'], array('attributes' => array('title' => $value['label'])));
   }
 
-  return theme('item_list', $items, NULL, 'ul', array('class' => 'islandora-solr-facet-pages-list'));
+  if (!empty($items)) {
+    return theme('item_list', $items, NULL, 'ul', array('class' => 'islandora-solr-facet-pages-list'));
+  }
+  else {
+    return FALSE;
+  }
+  
 }
