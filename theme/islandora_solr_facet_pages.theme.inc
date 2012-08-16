@@ -68,7 +68,7 @@ function theme_islandora_solr_facet_pages_letterer($facet_queries, $fq_map, $pre
   // ul
   $output = '<ul class="islandora-solr-facet-pages-letterer">';
   // li: ALL
-  $output .= '<li class="letter' . ((t('ALL') == $prefix) ? ' active' : '') . '">';
+  $output .= '<li class="letter first' . ((t('ALL') == $prefix) ? ' active' : '') . '">';
   $output .= '<a href="' . url('browse/' . $path) . '" title="' . t('Browse all') . '">' . t('ALL') . '</a>';
   $output .= '</li>';
 
