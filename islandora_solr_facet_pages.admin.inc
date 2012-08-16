@@ -149,8 +149,17 @@ function theme_islandora_solr_facet_pages_admin_table($form) {
  * Implements hook_validate().
  */
 function islandora_solr_facet_pages_admin_settings_validate($form, &$form_state) {
+
   // on save
-  if ($form_state['clicked_button']['#value'] == t('Save')) {
+  if ($form_state['clicked_button']['#id'] == 'edit-submit') {
+
+    // check for valid paths
+    foreach ($form_state['values']['islandora_solr_facet_pages_fields_data']['fields'] as $key => $value) {
+      if (!preg_match("/^[a-zA-Z0-9-_]*$/", $value['path'])) {
+        form_set_error('islandora_solr_facet_pages_fields_data][fields][' . $key . '][path', t('The path can only contain the following characters: a-z, A-Z, 0-9, - and _'));
+      }
+    }
+    
     // get limit value
     $limit = $form_state['values']['islandora_solr_facet_pages_limit'];
     $limit = trim($limit);
@@ -159,9 +168,10 @@ function islandora_solr_facet_pages_admin_settings_validate($form, &$form_state)
       form_set_error('islandora_solr_facet_pages_limit', t('Exposed results must be numeric.'));
     }
     // check for no decimals
-    if (strpos($limit, '.') OR strpos($limit, ',')) {
+    if (strpos($limit, '.')) {
       form_set_error('islandora_solr_facet_pages_limit', t('Exposed results cannot be decimals.'));
     }
+    
   }
 }
 
@@ -171,10 +181,10 @@ function islandora_solr_facet_pages_admin_settings_validate($form, &$form_state)
 function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
 
   // get operation
-  $op = $form_state['clicked_button']['#value'];
+  $op = $form_state['clicked_button']['#id'];
 
   switch ($op) {
-    case t('Save'):
+    case 'edit-submit':
       // set variables
       // clean up array
       $fields_data = $form_state['values']['islandora_solr_facet_pages_fields_data']['fields'];
@@ -189,7 +199,7 @@ function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
 
       drupal_set_message(t('The configuration options have been saved.'));
       break;
-    case t('Reset to defaults'):
+    case 'edit-reset':
       // empty variables
 
       // remove variables
