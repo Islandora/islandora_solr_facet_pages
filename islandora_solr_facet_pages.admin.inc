@@ -76,6 +76,29 @@ function islandora_solr_facet_pages_admin_settings(&$form_state) {
       '#description' => t('The amount of values returned per page. Leave empty to return all fields'),
   );
 
+  // limit maximum results to be returned
+  $form['facet_pages']['islandora_solr_facet_pages_facet_limit'] = array(
+      '#type' => 'select',
+      '#title' => t('Maximum searchable facet values'),
+      '#multiple' => FALSE,
+      '#options' => array(
+        1000 => '1,000',
+        5000 => '5,000',
+        10000 => '10,000',
+        100000 => '100,000',
+        250000 => '250,000',
+        500000 => '500,000',
+        750000 => '750,000',
+        1000000 => '1,000,000',
+        2500000 => '2,500,000',
+        5000000 => '5,000,000',
+        7500000 => '7,500,000',
+        10000000 => '10,000,000',
+      ),
+      '#default_value' => variable_get('islandora_solr_facet_pages_facet_limit', 100000),
+      '#description' => t('The maximum amount of values returned per page. A higher number cause slow page loads.'),
+  );
+
   // submit
   $form['buttons']['submit'] = array(
       '#type' => 'submit',
@@ -162,6 +185,7 @@ function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
       }
       variable_set('islandora_solr_facet_pages_fields_data', $fields_data);
       variable_set('islandora_solr_facet_pages_limit', trim($form_state['values']['islandora_solr_facet_pages_limit']));
+      variable_set('islandora_solr_facet_pages_facet_limit', $form_state['values']['islandora_solr_facet_pages_facet_limit']);
 
       drupal_set_message(t('The configuration options have been saved.'));
       break;
@@ -172,6 +196,7 @@ function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
       $variables = array(
         'islandora_solr_facet_pages_fields_data',
         'islandora_solr_facet_pages_limit',
+        'islandora_solr_facet_pages_facet_limit',
       );
       foreach ($variables as $variable) {
         variable_del($variable);
