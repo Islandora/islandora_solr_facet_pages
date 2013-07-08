@@ -1,12 +1,14 @@
 <?php
 
 /**
+ * @file
+ * Various hook and function implementations.
+ */
+
+/**
  * Implements hook_init().
  */
 function islandora_solr_facet_pages_init() {
-
-  // include solrPhpClient
-  module_load_include('php', 'islandora_solr_search', 'SolrPhpClient/Apache/Solr/Service');
   // include islandora solr common.inc
   module_load_include('inc', 'islandora_solr_search', 'includes/common');
 }
@@ -15,6 +17,8 @@ function islandora_solr_facet_pages_init() {
  * Implements hook_menu().
  */
 function islandora_solr_facet_pages_menu() {
+  $items = array();
+
   // @TODO: create separate permission?
   $items['browse'] = array(
       'page callback' => 'islandora_solr_facet_pages_callback',
@@ -84,34 +88,32 @@ function islandora_solr_facet_pages_theme() {
   );
 }
 
-
-
-
 /**
- * Implementation of hook_block().
+ * Implements hook_block_info().
  */
-function islandora_solr_facet_pages_block($op = 'list', $delta = '', $edit = array()) {
-  // switch operation
-  switch ($op) {
-    case 'list':
-      $blocks['islandora-solr-facet-pages'] = array(
-        'info'       => t('Islandora solr facet pages'),
-      );
-      return $blocks;
-    case 'view':
-      switch ($delta) {
-        case 'islandora-solr-facet-pages':
-          // subject
-          $block['subject'] = t('Islandora solr facet pages');
-          $block['content'] = _islandora_solr_facet_pages_block_callback();
-          break;
-      }
-      return $block;
-  }
+function islandora_solr_facet_pages_block_info() {
+  return array(
+    'islandora-solr-facet-pages' => array(
+      'info' => t('Islandora Solr facet pages'),
+    );
+  );
 }
 
+/**
+ * Implements hook_block_view().
+ */
+function islandora_solr_facet_pages_block_view($delta = '') {
+  $block = array();
 
+  switch ($delta) {
+    case 'islandora-solr-facet-pages':
+      $block['subject'] = t('Islandora Solr facet pages');
+      $block['content'] = _islandora_solr_facet_pages_block_callback();
+      break;
+  }
 
+  return $block;
+}
 
 /**
  * Performs a solr query to get facets fields for the alphabetical pager. It
@@ -204,7 +206,7 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix) {
   $result_object = json_decode($solr->search($query, 0, 0, $facet_params)->getRawResponse());
 
   $fields = (array) $result_object->facet_counts->facet_fields->$solr_field;
-  
+
   return $fields;
 }
 
@@ -362,5 +364,4 @@ function _islandora_solr_facet_pages_block_callback() {
   else {
     return FALSE;
   }
-  
 }
