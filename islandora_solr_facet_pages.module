@@ -145,7 +145,7 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field) {
     'facet.mincount' => 1,
     'facet.limit' => 0,
     'facet.query' => $fq,
-    'qt' => variable_get('islandora_solr_search_block_request_handler', 'standard'),
+    'qt' => variable_get('islandora_solr_request_handler', 'standard'),
   );
 
   // Set query.
@@ -188,7 +188,7 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix) {
     'facet.sort' => 'index',
     'facet.mincount' => 1,
     'facet.limit' => variable_get('islandora_solr_facet_pages_facet_limit', 100000),
-    'qt' => variable_get('islandora_solr_search_block_request_handler', 'standard'),
+    'qt' => variable_get('islandora_solr_request_handler', 'standard'),
   );
 
   // Set the facet prefix.
@@ -273,7 +273,7 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL) {
   drupal_add_css($base_css);
 
   // Use Solr faceting to get list of names.
-  $parsed_url = parse_url(variable_get('islandora_solr_search_block_url', 'http://localhost:8080/solr'));
+  $parsed_url = parse_url(variable_get('islandora_solr_url', 'http://localhost:8080/solr'));
   $solr = new Apache_Solr_Service($parsed_url['host'], $parsed_url['port'], $parsed_url['path']);
 
   // Render letters.
