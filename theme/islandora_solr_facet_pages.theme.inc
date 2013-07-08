@@ -67,7 +67,8 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrappe
  * @see islandora_solr_facet_pages_theme()
  * @see _islandora_solr_facet_pages_letterer()
  */
-function theme_islandora_solr_facet_pages_letterer($facet_queries, $fq_map, $prefix, $path) {
+function theme_islandora_solr_facet_pages_letterer(&$vars) {
+  extract($vars);
 
   $output = '<ul class="islandora-solr-facet-pages-letterer">';
 

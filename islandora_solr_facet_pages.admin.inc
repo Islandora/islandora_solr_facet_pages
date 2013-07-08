@@ -112,9 +112,10 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
 /**
  * Theme callback.
  */
-function theme_islandora_solr_facet_pages_admin_table($form) {
+function theme_islandora_solr_facet_pages_admin_table(&$vars) {
   // Set variable.
   $rows = array();
+  $form = $vars['form'];
 
   // Render islandora_solr_primary_display_table.
   foreach ($form['fields'] as $key => $elements) {
@@ -144,7 +145,7 @@ function theme_islandora_solr_facet_pages_admin_table($form) {
     'attributes' => array(
       'id' => 'islandora-solr-facet-pages-admin-table',
     ),
-  );
+  ));
 
   return $output;
 }

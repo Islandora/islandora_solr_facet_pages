@@ -27,7 +27,7 @@ function islandora_solr_facet_pages_menu() {
     'access arguments' => array(1),
     'type' => MENU_CALLBACK,
   );
-  $items['admin/settings/islandora_solr_search/facet_pages'] = array(
+  $items['admin/islandora/search/islandora_solr/facet_pages'] = array(
     'title' => 'Facet Pages',
     'description' => 'Islandora Solr facet pages settings',
     'page callback' => 'drupal_get_form',
@@ -45,15 +45,15 @@ function islandora_solr_facet_pages_menu() {
  */
 function islandora_solr_facet_pages_theme() {
   // Set path.
-  $path = drupal_get_path('module', 'islandora_solr_facet_pages');
-  $file = 'islandora_solr_facet_pages.theme.inc';
+  $base = array(
+    'path' => drupal_get_path('module', 'islandora_solr_facet_pages') . '/theme',
+    'file' => 'islandora_solr_facet_pages.theme.inc',
+  );
 
   return array(
-    'islandora_solr_facet_pages_wrapper' => array(
-      'path' => $path . '/theme',
-      'file' => $file,
+    'islandora_solr_facet_pages_wrapper' => $base + array(
       'template' => 'islandora-solr-facet-pages-wrapper',
-      'arguments' => array(
+      'variables' => array(
         'letterer' => NULL,
         'results' => NULL,
         'pager' => NULL,
@@ -61,20 +61,16 @@ function islandora_solr_facet_pages_theme() {
         'pager_data' => array(),
       ),
     ),
-    'islandora_solr_facet_pages_results' => array(
-      'path' => $path . '/theme',
-      'file' => $file,
+    'islandora_solr_facet_pages_results' => $base + array(
       'template' => 'islandora-solr-facet-pages-results',
-      'arguments' => array(
+      'variables' => array(
         'results' => array(),
         'solr_field' => NULL,
         'path' => NULL,
       ),
     ),
-    'islandora_solr_facet_pages_letterer' => array(
-      'path' => $path . '/theme',
-      'file' => $file,
-      'arguments' => array(
+    'islandora_solr_facet_pages_letterer' => $base + array(
+      'variables' => array(
         'facet_queries' => array(),
         'fq_map' => array(),
         'prefix' => NULL,
@@ -83,9 +79,7 @@ function islandora_solr_facet_pages_theme() {
     ),
     'islandora_solr_facet_pages_admin_table' => array(
       'file' => 'islandora_solr_facet_pages.admin.inc',
-      'arguments' => array(
-        'form' => array(),
-      ),
+      'render element' => 'form',
     ),
   );
 }
@@ -186,9 +180,6 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field) {
 function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix) {
   // Get the actual results.
   $query = "$solr_field:[* TO *]";
-  if ($q !== NULL) {
-    $query .= "AND $q";
-  }
 
   // Set facet parameters.
   $facet_params = array(
@@ -236,8 +227,8 @@ function _islandora_solr_facet_pages_pager($result_fields = array()) {
   // Get page limit.
   if (!empty($limit)) {
     $total = count($result_fields);
-    $offset = $params['page'] ? $params['page'] * $limit : 0;
-    islandora_solr_search_pager_init($total, $limit);
+    $offset = isset($params['page']) ? $params['page'] * $limit : 0;
+    pager_default_initialize($total, $limit);
   }
 
   return array(
@@ -287,7 +278,12 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL) {
 
   // Render letters.
   $letterer_arr = _islandora_solr_facet_pages_letterer($solr, $solr_field);
-  $letterer = theme('islandora_solr_facet_pages_letterer', $letterer_arr['facet_queries'], $letterer_arr['fq_map'], $prefix, $path);
+  $letterer = theme('islandora_solr_facet_pages_letterer', array(
+    'facet_queries' => $letterer_arr['facet_queries'],
+    'fq_map' => $letterer_arr['fq_map'],
+    'prefix' => $prefix,
+    'path' => $path,
+  ));
 
   // Collect results.
   $result_fields = _islandora_solr_facet_pages_results($solr, $solr_field, $prefix);
@@ -304,12 +300,25 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL) {
 
   // Slice array.
   $results = array_slice($result_fields, $offset, $limit);
-  $results = theme('islandora_solr_facet_pages_results', $results, $solr_field, $path);
+  $results = theme('islandora_solr_facet_pages_results', array(
+    'results' => $results,
+    'solr_field' => $solr_field,
+    'path' => $path,
+  ));
 
   // Render pager.
-  $pager = theme('pager', array(), $limit, 0, NULL, 5);
+  $pager = theme('pager', array(
+    'element' => 0,
+    'quantity' => 5,
+  ));
 
-  return theme('islandora_solr_facet_pages_wrapper', $letterer, $results, $pager, $path, $pager_data);
+  return theme('islandora_solr_facet_pages_wrapper', array(
+    'letterer' => $letterer,
+    'results' => $results,
+    'pager' => $pager,
+    'path' => $path,
+    'pager_data' => $pager_data,
+  ));
 }
 
 /**
@@ -329,7 +338,7 @@ function islandora_solr_facet_pages_access_callback($path = NULL) {
   // Callback validation.
   foreach ($fields as $key => $value) {
     // Check for allowed paths.
-    if ($path == $value['path'] && user_access('view fedora collection')) {
+    if ($path == $value['path'] && user_access(FEDORA_VIEW_OBJECTS)) {
       return TRUE;
     }
   }
@@ -360,8 +369,12 @@ function _islandora_solr_facet_pages_block_callback() {
   }
 
   if (!empty($items)) {
-    return theme('item_list', $items, NULL, 'ul', array(
-      'class' => 'islandora-solr-facet-pages-list',
+    return theme('item_list', array(
+      'items' => $items,
+      'type' => 'ul',
+      'attributes' => array(
+        'class' => 'islandora-solr-facet-pages-list',
+      ),
     ));
   }
   else {
