@@ -48,18 +48,20 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrappe
 /**
  * Theme function to render the alphabetical pager.
  *
- * @param array $facet_queries
- *   Facet queries returned from Solr. eg: solr_field:A* => 1234
- *   This array is used to check the bucket size. An empty bucket won't be
- *   rendered into a link.
- * @param array $fq_map
- *   Array which maps query filter so prefixes. eg: solr_field:A* => A
- *   Used to render the link values.
- * @param string $prefix
- *   Currently active prefix for this page. Used to set active classes.
- * @param string $path
- *   Currently active path which is set in the admin interface to decide what
- *   solr field to facet on. Used to create URL's eg: url('browse/' . $path)
+ * @param array $vars
+ *   Array of parameters, including:
+ *   - facet_queries: Facet queries returned from Solr.
+ *     eg: solr_field:A* => 1234
+ *     This array is used to check the bucket size. An empty bucket won't be
+ *     rendered into a link.
+ *   - fq_map: Array which maps query filter so prefixes.
+ *     eg: solr_field:A* => A
+ *     Used to render the link values.
+ *   - prefix: Currently active prefix for this page. Used to set active
+ *     classes.
+ *   - path: Currently active path which is set in the admin interface to
+ *     decide what Solr field to facet on. Used to create URL's.
+ *     eg: url('browse/' . $path)
  *
  * @return string
  *   Return rendered alphabetical pager
