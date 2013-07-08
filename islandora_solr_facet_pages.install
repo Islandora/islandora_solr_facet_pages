@@ -9,11 +9,10 @@
 
 
 /**
- * Implements hook_uninstall(). 
+ * Implements hook_uninstall().
  */
 function islandora_solr_facet_pages_uninstall() {
-  
-  // remove variables
+  // Remove variables.
   $variables = array(
     'islandora_solr_facet_pages_fields_data',
     'islandora_solr_facet_pages_limit',

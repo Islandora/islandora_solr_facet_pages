@@ -12,9 +12,8 @@
  * Implements hook_preprocess().
  */
 function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_results(&$variables) {
-
-  // add template suggestion based on path name
-  $variables['template_files'][] =  'islandora-solr-facet-pages-results--' . $variables['path'];
+  // Add template suggestion based on path name.
+  $variables['template_files'][] = 'islandora-solr-facet-pages-results--' . $variables['path'];
 }
 
 /**
@@ -28,9 +27,13 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrappe
   if ($to > $total) {
     $to = $total;
   }
-  
+
   if ($total > 0) {
-    $results_count = t('Showing @from - @to of @total', array('@from' => $from, '@to' => $to, '@total' => $total));
+    $results_count = t('Showing @from - @to of @total', array(
+      '@from' => $from,
+      '@to' => $to,
+      '@total' => $total,
+    ));
   }
   else {
     $results_count = t('No results found.');
@@ -38,12 +41,12 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrappe
 
   $variables['results_count'] = $results_count;
 
-  // add template suggestion based on path name
-  $variables['template_files'][] =  'islandora-solr-facet-pages-wrapper--' . $variables['path'];
+  // Add template suggestion based on path name.
+  $variables['template_files'][] = 'islandora-solr-facet-pages-wrapper--' . $variables['path'];
 }
 
 /**
- * Theme function to render the alphabetical pager
+ * Theme function to render the alphabetical pager.
  *
  * @param array $facet_queries
  *   Facet queries returned from Solr. eg: solr_field:A* => 1234
@@ -57,28 +60,28 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrappe
  * @param string $path
  *   Currently active path which is set in the admin interface to decide what
  *   solr field to facet on. Used to create URL's eg: url('browse/' . $path)
+ *
  * @return string
  *   Return rendered alphabetical pager
  *
- *  @see islandora_solr_facet_pages_theme(), 
- *  @see _islandora_solr_facet_pages_letterer().
+ * @see islandora_solr_facet_pages_theme()
+ * @see _islandora_solr_facet_pages_letterer()
  */
 function theme_islandora_solr_facet_pages_letterer($facet_queries, $fq_map, $prefix, $path) {
 
-  // ul
   $output = '<ul class="islandora-solr-facet-pages-letterer">';
-  // li: ALL
+
   $output .= '<li class="letter first' . ((t('ALL') == $prefix) ? ' active' : '') . '">';
   $output .= '<a href="' . url('browse/' . $path) . '" title="' . t('Browse all') . '">' . t('ALL') . '</a>';
   $output .= '</li>';
 
-  // loop over facet queries to render letters
+  // Loop over facet queries to render letters.
   foreach ($facet_queries as $query => $count) {
-    // value
     $value = $fq_map[$query];
-    // li: value
+
     $output .= '<li class="letter' . (($value == $prefix) ? ' active' : '') . '">';
-    // create link if facet bucket is not empty
+
+    // Create link if facet bucket is not empty.
     if ($count > 0) {
       $url = 'browse/' . $path . '/' . $value;
       $output .= '<a href="' . url($url) . '" title="' . t('Browse starting with @letter', array('@letter' => $value)) . '">' . $value . '</a>';
