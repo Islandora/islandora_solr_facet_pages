@@ -3,12 +3,11 @@
 /* Letterer */
 ul.islandora-solr-facet-pages-letterer li
 {
-  display: inline-block;
-  width: 18px;
   background-image: none;
+  display: inline-block;
   padding: 0;
-  
   text-align: center;
+  width: 18px;
 }
 
 ul.islandora-solr-facet-pages-letterer li.first
@@ -18,7 +17,7 @@ ul.islandora-solr-facet-pages-letterer li.first
 
 ul.islandora-solr-facet-pages-letterer li a
 {
-  padding: 2px 5px;
+  margin: 2px 5px;
 }
 
 ul.islandora-solr-facet-pages-letterer li.active a
