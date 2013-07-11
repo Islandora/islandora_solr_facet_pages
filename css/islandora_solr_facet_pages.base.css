@@ -4,18 +4,12 @@
 ul.islandora-solr-facet-pages-letterer li
 {
   background-image: none;
-  display: inline-block;
+  display: inline;
   padding: 0;
   text-align: center;
-  width: 18px;
 }
 
-ul.islandora-solr-facet-pages-letterer li.first
-{
-  width: 32px;
-}
-
-ul.islandora-solr-facet-pages-letterer li a
+ul.islandora-solr-facet-pages-letterer li
 {
   margin: 2px 5px;
 }
