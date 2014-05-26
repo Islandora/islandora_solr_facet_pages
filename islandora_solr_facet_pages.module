@@ -338,7 +338,7 @@ function islandora_solr_facet_pages_access_callback($path = NULL) {
   // Callback validation.
   foreach ($fields as $key => $value) {
     // Check for allowed paths.
-    if ($path == $value['path'] && user_access(FEDORA_VIEW_OBJECTS)) {
+    if ($path == $value['path'] && user_access(ISLANDORA_VIEW_OBJECTS)) {
       return TRUE;
     }
   }
