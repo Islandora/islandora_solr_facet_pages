@@ -350,7 +350,6 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
     $search_form = '';
   }
 
-
   return theme('islandora_solr_facet_pages_wrapper', array(
     'search_form' => $search_form,
     'letterer' => $letterer,
