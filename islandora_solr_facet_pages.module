@@ -159,14 +159,14 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term =
     $query = "$solr_field:[* TO *]";
   }
 
-  $facet_queries = new stdClass();
   try {
     // Solr results in JSON format.
-  $result_object = json_decode($solr->search($query, 0, 0, $params)->getRawResponse());
-  // Facet queries.
-  $facet_queries = $result_object->facet_counts->facet_queries;
+    $result_object = json_decode($solr->search($query, 0, 0, $params)->getRawResponse());
+    // Facet queries.
+    $facet_queries = $result_object->facet_counts->facet_queries;
   }
   catch (Exception $e) {
+    $facet_queries = new stdClass();
     drupal_set_message(check_plain(t('Error searching Solr index')) . ' ' . $e->getMessage(), 'error', FALSE);
   }
 
@@ -217,12 +217,13 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix, $searc
   if ($prefix != t('ALL')) {
     $facet_params['facet.prefix'] = $prefix;
   }
-  $fields = array();
+
   try {
     // Solr results in JSON format.
     $result_object = json_decode($solr->search($query, 0, 0, $facet_params)->getRawResponse());
     $fields = (array) $result_object->facet_counts->facet_fields->$solr_field;
   } catch (Exception $e) {
+    $fields = array();
     drupal_set_message(check_plain(t('Error searching Solr index')) . ' ' . $e->getMessage(), 'error', FALSE);
   }
 
@@ -337,7 +338,6 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
     'quantity' => 5,
   ));
 
-  $search_form = '';
   if (variable_get('islandora_solr_facet_pages_search_form', FALSE)) {
     $form = drupal_get_form('islandora_solr_facet_pages_search_form', array(
       'path' => $path,
@@ -345,6 +345,9 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
       'search_term' => $search_term,
     ));
     $search_form = drupal_render($form);
+  }
+  else {
+    $search_form = '';
   }
 
 
@@ -419,6 +422,19 @@ function _islandora_solr_facet_pages_block_callback() {
   }
 }
 
+/**
+ * Defines a facet search form for search facets.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ * @param array $vars
+ *   Current facet variables to use in the search form.
+ *
+ * @return array
+ *   The drupal form definition.
+ */
 function islandora_solr_facet_pages_search_form($form, &$form_state, $vars = array()) {
     $form = array();
     $form_state['storage'] = array(
@@ -438,8 +454,15 @@ function islandora_solr_facet_pages_search_form($form, &$form_state, $vars = arr
     return $form;
 }
 
-/*
+/**
+ * Submit handler for solr facet page searh form.
  *
+ * Goto browse the path with the included params.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
  */
 function islandora_solr_facet_pages_search_form_submit($form, &$form_state) {
   drupal_goto("browse/{$form_state['storage']['vars']['path']}/{$form_state['storage']['vars']['prefix']}/{$form_state['values']['search_term']}");
