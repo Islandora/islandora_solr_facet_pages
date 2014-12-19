@@ -95,6 +95,14 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
     $form['facet_pages']['islandora_solr_facet_pages_facet_limit']['#options'][$o] = number_format($o);
   }
 
+  // Display search form on facet page.
+  $form['facet_pages']['islandora_solr_facet_pages_search_form'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Facet search form'),
+    '#default_value' => variable_get('islandora_solr_facet_pages_search_form', FALSE),
+    '#description' => t('Display a search form on the facet page.'),
+  );
+
   $form['buttons']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -200,6 +208,7 @@ function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
       variable_set('islandora_solr_facet_pages_fields_data', $fields_data);
       variable_set('islandora_solr_facet_pages_limit', trim($form_state['values']['islandora_solr_facet_pages_limit']));
       variable_set('islandora_solr_facet_pages_facet_limit', $form_state['values']['islandora_solr_facet_pages_facet_limit']);
+      variable_set('islandora_solr_facet_pages_search_form', $form_state['values']['islandora_solr_facet_pages_search_form']);
 
       drupal_set_message(t('The configuration options have been saved.'));
       break;

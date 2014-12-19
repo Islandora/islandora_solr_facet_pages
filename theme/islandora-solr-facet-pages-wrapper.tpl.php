@@ -19,6 +19,8 @@
 ?>
 
 <div class="islandora-solr-facet-pages-wrapper">
+
+  <?php print $search_form; ?>
   <?php print $letterer; ?>
   <?php print $pager; ?>
   <span class="results-count"><?php print $results_count; ?></span>
