@@ -91,6 +91,7 @@ function islandora_solr_facet_pages_block_info() {
   return array(
     'islandora-solr-facet-pages' => array(
       'info' => t('Islandora Solr facet pages'),
+      'cache' => DRUPAL_NO_CACHE,
     ),
   );
 }
