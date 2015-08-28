@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Theme functions
+ * Theme functions.
  *
  * Contains all theme related functionality. Theme and preprocess
  * functions.
@@ -61,7 +61,7 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrappe
  *     classes.
  *   - path: Currently active path which is set in the admin interface to
  *     decide what Solr field to facet on. Used to create URL's.
- *     eg: url('browse/' . $path)
+ *     eg: url('browse/' . $path).
  *
  * @return string
  *   Return rendered alphabetical pager
