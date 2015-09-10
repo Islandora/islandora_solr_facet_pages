@@ -1,5 +1,7 @@
 # Islandora Solr Facet Pages [![Build Status](https://travis-ci.org/Islandora/islandora_solr_facet_pages.png?branch=7.x)](https://travis-ci.org/Islandora/islandora_solr_facet_pages)
 
+## Introduction
+
 The Islandora Solr facet pages module allows you to browse through solr facet data through an alphabetically split up navigation interface. You can set multiple pages for different solr fields to facet on.
 
 ## Requirements
