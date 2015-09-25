@@ -42,6 +42,7 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
       'solr_field' => array(
         '#type' => 'textfield',
         '#default_value' => isset($value['solr_field']) ? $value['solr_field'] : '',
+        '#autocomplete_path' => 'islandora_solr/autocomplete_luke',
       ),
       'label' => array(
         '#type' => 'textfield',
