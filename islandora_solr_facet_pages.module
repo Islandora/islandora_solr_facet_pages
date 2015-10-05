@@ -167,10 +167,9 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term =
   // Because IslandoraSolrQueryProcessor stomps on our facet params.
   $solr_build->solrParams = array_replace_recursive($solr_build->solrParams, $params);
   try {
-    // Solr results in JSON format.
-    $result_object = json_decode($solr->search($query, 0, 0, $solr_build->solrParams)->getRawResponse());
+    $solr_build->executeQuery();
     // Facet queries.
-    $facet_queries = $result_object->facet_counts->facet_queries;
+    $facet_queries = $solr_build->islandoraSolrResult['facet_counts']['facet_queries'];
   }
   catch (Exception $e) {
     $facet_queries = new stdClass();
@@ -231,9 +230,8 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix, $searc
   // Because the IslandoraSolrQueryProcessor stomps on our facet information.
   $solr_build->solrParams = array_replace_recursive($solr_build->solrParams, $facet_params);
   try {
-    // Solr results in JSON format.
-    $result_object = json_decode($solr->search($solr_query, 0, 0, $solr_build->solrParams)->getRawResponse());
-    $fields = (array) $result_object->facet_counts->facet_fields->$solr_field;
+    $solr_build->executeQuery();
+    $fields = (array) $solr_build->islandoraSolrResult['facet_counts']['facet_fields'][$solr_field];
   }
   catch (Exception $e) {
     $fields = array();
