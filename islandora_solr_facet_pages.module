@@ -138,7 +138,7 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term =
   $fq = array();
   $fq_map = array();
   foreach (range('A', 'Z') as $letter) {
-    $value = "$solr_field:$letter*";
+    $value = "$solr_field:($letter* OR " . strtolower($letter) . "*)";
     $fq_map[$value] = $letter;
     $fq[] = $value;
   }
