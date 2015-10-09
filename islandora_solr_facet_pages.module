@@ -11,6 +11,8 @@
 function islandora_solr_facet_pages_init() {
   // Include islandora_solr common.inc.
   module_load_include('inc', 'islandora_solr', 'includes/utilities');
+  // Include islandora solr query_processor.inc
+  module_load_include('inc', 'islandora_solr', 'includes/query_processor');
 }
 
 /**
@@ -132,6 +134,7 @@ function islandora_solr_facet_pages_block_view($delta = '') {
  *   size, eg: solr_field:A* => 1234
  */
 function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term = NULL) {
+  $solr_build = new IslandoraSolrQueryProcessor();
   $fq = array();
   $fq_map = array();
   foreach (range('A', 'Z') as $letter) {
@@ -149,6 +152,7 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term =
     'facet.limit' => 0,
     'facet.query' => $fq,
     'qt' => variable_get('islandora_solr_request_handler', 'standard'),
+    'hl' => 'false',
   );
 
   // Set query.
@@ -159,10 +163,12 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term =
   else {
     $query = "$solr_field:[* TO *]";
   }
-
+  $solr_build->buildQuery($query, $params);
+  // Because IslandoraSolrQueryProcessor stomps on our facet params.
+  $solr_build->solrParams = array_replace_recursive($solr_build->solrParams, $params);
   try {
     // Solr results in JSON format.
-    $result_object = json_decode($solr->search($query, 0, 0, $params)->getRawResponse());
+    $result_object = json_decode($solr->search($query, 0, 0, $solr_build->solrParams)->getRawResponse());
     // Facet queries.
     $facet_queries = $result_object->facet_counts->facet_queries;
   }
@@ -195,6 +201,7 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term =
  *   solr value => 123
  */
 function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix, $search_term = NULL) {
+  $solr_build = new IslandoraSolrQueryProcessor();
   // Get the actual results.
   $search_term = trim($search_term);
   if ($search_term) {
@@ -212,16 +219,20 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix, $searc
     'facet.mincount' => 1,
     'facet.limit' => variable_get('islandora_solr_facet_pages_facet_limit', 100000),
     'qt' => variable_get('islandora_solr_request_handler', 'standard'),
+    'hl' => 'false',
   );
 
   // Set the facet prefix.
   if ($prefix != t('ALL')) {
     $facet_params['facet.prefix'] = $prefix;
   }
-
+  $solr_build->buildQuery($query, $facet_params);
+  $solr_query = ($solr_build->internalSolrQuery) ? $solr_build->internalSolrQuery : $solr_build->solrQuery;
+  // Because the IslandoraSolrQueryProcessor stomps on our facet information.
+  $solr_build->solrParams = array_replace_recursive($solr_build->solrParams, $facet_params);
   try {
     // Solr results in JSON format.
-    $result_object = json_decode($solr->search($query, 0, 0, $facet_params)->getRawResponse());
+    $result_object = json_decode($solr->search($solr_query, 0, 0, $solr_build->solrParams)->getRawResponse());
     $fields = (array) $result_object->facet_counts->facet_fields->$solr_field;
   }
   catch (Exception $e) {
