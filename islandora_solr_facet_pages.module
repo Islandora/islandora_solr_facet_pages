@@ -107,7 +107,7 @@ function islandora_solr_facet_pages_block_view($delta = '') {
   switch ($delta) {
     case 'islandora-solr-facet-pages':
       $block['subject'] = t('Islandora Solr facet pages');
-      $block['content'] = _islandora_solr_facet_pages_block_callback();
+      $block['content'] = islandora_solr_facet_pages_block_callback();
       break;
   }
 
@@ -133,7 +133,7 @@ function islandora_solr_facet_pages_block_view($delta = '') {
  *   Facet_queries are the solr results wich maps the filter query to the bucket
  *   size, eg: solr_field:A* => 1234
  */
-function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term = NULL) {
+function islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term = NULL) {
   $solr_build = new IslandoraSolrQueryProcessor();
   $fq = array();
   $fq_map = array();
@@ -199,7 +199,7 @@ function _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term =
  *   Returns an array of all the facet field values and the bucket size: eg:
  *   solr value => 123
  */
-function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix, $search_term = NULL) {
+function islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $search_term = NULL) {
   $solr_build = new IslandoraSolrQueryProcessor();
   // Get the actual results.
   $search_term = trim($search_term);
@@ -251,7 +251,7 @@ function _islandora_solr_facet_pages_results($solr, $solr_field, $prefix, $searc
  *   Returns an array containing values to configure and render the pager.
  *   Limit, offset and total.
  */
-function _islandora_solr_facet_pages_pager($result_fields = array()) {
+function islandora_solr_facet_pages_pager($result_fields = array()) {
   // Set variables.
   $limit = variable_get('islandora_solr_facet_pages_limit', 25);
   $offset = 0;
@@ -314,7 +314,7 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   $solr = new Apache_Solr_Service($parsed_url['host'], $parsed_url['port'], $parsed_url['path']);
 
   // Render letters.
-  $letterer_arr = _islandora_solr_facet_pages_letterer($solr, $solr_field, $search_term);
+  $letterer_arr = islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term);
   $letterer = theme('islandora_solr_facet_pages_letterer', array(
     'facet_queries' => $letterer_arr['facet_queries'],
     'fq_map' => $letterer_arr['fq_map'],
@@ -323,15 +323,15 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   ));
 
   // Collect results.
-  $result_fields = _islandora_solr_facet_pages_results($solr, $solr_field, $prefix, $search_term);
+  $result_fields = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $search_term);
   // Collect results with lowercase.
   $prefix_lower = strtolower($prefix);
-  $result_fields_lower = _islandora_solr_facet_pages_results($solr, $solr_field, $prefix_lower, $search_term);
+  $result_fields_lower = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix_lower, $search_term);
   // Merge uppercase with lowercase.
   $result_fields = array_merge($result_fields, $result_fields_lower);
 
   // Set up pager.
-  $pager_data = _islandora_solr_facet_pages_pager($result_fields);
+  $pager_data = islandora_solr_facet_pages_pager($result_fields);
   $offset = $pager_data['offset'];
   $limit = $pager_data['limit'];
 
@@ -404,7 +404,7 @@ function islandora_solr_facet_pages_access_callback($path = NULL) {
  *   Returns a rendered bulletted list with links to all configured facet
  *   pages.
  */
-function _islandora_solr_facet_pages_block_callback() {
+function islandora_solr_facet_pages_block_callback() {
   // Get available fields from variable.
   $fields = variable_get('islandora_solr_facet_pages_fields_data', array());
 
