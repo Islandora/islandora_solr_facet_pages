@@ -67,7 +67,7 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrappe
  *   Return rendered alphabetical pager
  *
  * @see islandora_solr_facet_pages_theme()
- * @see _islandora_solr_facet_pages_letterer()
+ * @see islandora_solr_facet_pages_build_letterer()
  */
 function theme_islandora_solr_facet_pages_letterer(&$vars) {
   extract($vars);
