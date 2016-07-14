@@ -71,11 +71,18 @@ function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrappe
  */
 function theme_islandora_solr_facet_pages_letterer(&$vars) {
   extract($vars);
-
+  
   $output = '<ul class="islandora-solr-facet-pages-letterer">';
 
   $output .= '<li class="letter first' . ((t('ALL') == $prefix) ? ' active' : '') . '">';
-  $output .= '<a href="' . url('browse/' . $path) . '" title="' . t('Browse all') . '">' . t('ALL') . '</a>';
+  if($view_mode == 'Page'){
+    $output .= '<a href="' . url($url_alias . '/' . $path) . '" title="' . t('Browse all') . '">' . t('ALL') . '</a>';
+  }else{
+    //$current_path = current_path();
+    $query = array('mode'=>$path);
+    $output .= '<a href="' . url($url_alias. '/' . $path, array('query' => $query)) . '" title="' . t('Browse all') . '">' . t('ALL') . '</a>';
+  }
+  
   $output .= '</li>';
 
   // Loop over facet queries to render letters.
@@ -86,14 +93,29 @@ function theme_islandora_solr_facet_pages_letterer(&$vars) {
 
     // Create link if facet bucket is not empty.
     if ($count > 0) {
-      $url = 'browse/' . $path . '/' . $value;
-      $output .= '<a href="' . url($url) . '" title="' . t('Browse starting with @letter', array('@letter' => $value)) . '">' . $value . '</a>';
+      if($view_mode === 'Page'){
+          $url = $url_alias . '/' . $path . '/' . $value;
+          $output .= '<a href="' . url($url) . '" title="' . t('Browse starting with @letter', array('@letter' => $value)) . '">' . $value . '</a>';
+      }else{
+        $query = array('mode'=>$path,'prefix'=>$value);
+        $url = $url_alias . '/' . $path;
+        $output .= '<a href="' . url($url, array('query' => $query)) . '" title="' . t('Browse starting with @letter', array('@letter' => $value)) . '">' . $value . '</a>';
+      }
+      
     }
     else {
       $output .= $value;
     }
     $output .= '</li>';
   }
+  $output .= '<li class="letter last' . ((t('Chinese') == $prefix) ? ' active' : '') . '">';
+  if($view_mode === 'Page'){
+    $output .= '<a href="' . url($url_alias . '/' . $path . '/Chinese') . '" title="' . t('Chinese character') . '">' . t('Chinese') . '</a>';
+  }else{
+    $query = array('mode'=>$path,'prefix'=>'Chinese');
+    $output .= '<a href="' . url($url_alias . '/' . $path, array('query' => $query)) . '" title="' . t('Chinese character') . '">' . t('Chinese') . '</a>';
+  }
+  $output .= '</li>';
   $output .= '</ul>';
 
   return $output;
