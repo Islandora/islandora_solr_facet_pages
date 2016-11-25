@@ -151,10 +151,13 @@ function islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_t
     'facet.mincount' => 1,
     'facet.limit' => 0,
     'facet.query' => $fq,
-    'qt' => variable_get('islandora_solr_request_handler', 'standard'),
     'hl' => 'false',
   );
-
+  $request_handler = variable_get('islandora_solr_request_handler', FALSE);
+  if ($request_handler) {
+    $params['qt'] = $request_handler;
+  }
+  
   // Set query.
   $search_term = trim($search_term);
   if ($search_term) {
@@ -217,9 +220,13 @@ function islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $
     'facet.sort' => 'index',
     'facet.mincount' => 1,
     'facet.limit' => variable_get('islandora_solr_facet_pages_facet_limit', 100000),
-    'qt' => variable_get('islandora_solr_request_handler', 'standard'),
     'hl' => 'false',
   );
+
+  $request_handler = variable_get('islandora_solr_request_handler', FALSE);
+  if ($request_handler) {
+    $facet_params['qt'] = $request_handler;
+  }
 
   // Set the facet prefix.
   if ($prefix != t('ALL')) {
