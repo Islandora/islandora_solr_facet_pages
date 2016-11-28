@@ -157,7 +157,7 @@ function islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_t
   if ($request_handler) {
     $params['qt'] = $request_handler;
   }
-  
+
   // Set query.
   $search_term = trim($search_term);
   if ($search_term) {
