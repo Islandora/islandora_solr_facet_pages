@@ -335,7 +335,7 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   $prefix_lower = strtolower($prefix);
   $result_fields_lower = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix_lower, $search_term);
   // Merge uppercase with lowercase.
-  $result_fields = array_merge($result_fields, $result_fields_lower);
+  $result_fields = $result_fields + $result_fields_lower;
 
   // Set up pager.
   $pager_data = islandora_solr_facet_pages_pager($result_fields);
@@ -343,7 +343,7 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   $limit = $pager_data['limit'];
 
   // Slice array.
-  $results = array_slice($result_fields, $offset, $limit);
+  $results = array_slice($result_fields, $offset, $limit, TRUE);
   $results = theme('islandora_solr_facet_pages_results', array(
     'results' => $results,
     'solr_field' => $solr_field,
