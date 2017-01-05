@@ -137,6 +137,7 @@ function islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_t
   $solr_build = new IslandoraSolrQueryProcessor();
   $fq = array();
   $fq_map = array();
+
   foreach (range('A', 'Z') as $letter) {
     $value = "$solr_field:($letter* OR " . strtolower($letter) . "*)";
     $fq_map[$value] = $letter;
@@ -178,7 +179,6 @@ function islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_t
     $facet_queries = new stdClass();
     drupal_set_message(check_plain(t('Error searching Solr index')) . ' ' . $e->getMessage(), 'error', FALSE);
   }
-
   return array(
     'facet_queries' => $facet_queries,
     'fq_map' => $fq_map,
@@ -206,13 +206,13 @@ function islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $
   $solr_build = new IslandoraSolrQueryProcessor();
   // Get the actual results.
   $search_term = trim($search_term);
+
   if ($search_term) {
-    $query = "$solr_field:($search_term)";
+    $query = "$solr_field:$search_term";
   }
   else {
     $query = "$solr_field:[* TO *]";
   }
-
   // Set facet parameters.
   $facet_params = array(
     'facet' => 'true',
@@ -235,7 +235,9 @@ function islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $
   $solr_build->buildQuery($query, $facet_params);
   $solr_query = ($solr_build->internalSolrQuery) ? $solr_build->internalSolrQuery : $solr_build->solrQuery;
   // Because the IslandoraSolrQueryProcessor stomps on our facet information.
+
   $solr_build->solrParams = array_replace_recursive($solr_build->solrParams, $facet_params);
+
   try {
     $solr_build->executeQuery();
     $fields = (array) $solr_build->islandoraSolrResult['facet_counts']['facet_fields'][$solr_field];
@@ -320,8 +322,13 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   $parsed_url = parse_url(variable_get('islandora_solr_url', 'http://localhost:8080/solr'));
   $solr = new Apache_Solr_Service($parsed_url['host'], $parsed_url['port'], $parsed_url['path']);
 
+  // Create an escaped version of the facet search term, for use with
+  // the queries run below. Preserve the origional '$search_term' for
+  // use with the form's 'search_term' value below.
+  $search_term_escape = islandora_solr_facet_escape($search_term);
+
   // Render letters.
-  $letterer_arr = islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term);
+  $letterer_arr = islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term_escape);
   $letterer = theme('islandora_solr_facet_pages_letterer', array(
     'facet_queries' => $letterer_arr['facet_queries'],
     'fq_map' => $letterer_arr['fq_map'],
@@ -330,10 +337,11 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   ));
 
   // Collect results.
-  $result_fields = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $search_term);
+  $result_fields = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $search_term_escape);
   // Collect results with lowercase.
   $prefix_lower = strtolower($prefix);
-  $result_fields_lower = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix_lower, $search_term);
+  $result_fields_lower = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix_lower, $search_term_escape);
+
   // Merge uppercase with lowercase.
   $result_fields = $result_fields + $result_fields_lower;
 
