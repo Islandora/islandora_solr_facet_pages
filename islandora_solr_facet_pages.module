@@ -325,7 +325,7 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   // Create an escaped version of the facet search term, for use with
   // the queries run below. Preserve the origional '$search_term' for
   // use with the form's 'search_term' value below.
-  $search_term_escape = islandora_solr_facet_escape($search_term);
+  $search_term_escape = islandora_solr_lesser_escape($search_term);
 
   // Render letters.
   $letterer_arr = islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term_escape);
