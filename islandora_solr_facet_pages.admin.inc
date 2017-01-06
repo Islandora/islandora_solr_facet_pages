@@ -123,7 +123,6 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
     '#states' => array(
       'visible' => array(
         ':input[name="islandora_solr_facet_pages_lucene_syntax_escape"]' => array('checked' => TRUE),
-        'or',
         ':input[name="islandora_solr_facet_pages_search_form"]' => array('checked' => TRUE),
       ),
     ),
