@@ -234,8 +234,8 @@ function islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $
   }
   $solr_build->buildQuery($query, $facet_params);
   $solr_query = ($solr_build->internalSolrQuery) ? $solr_build->internalSolrQuery : $solr_build->solrQuery;
+  
   // Because the IslandoraSolrQueryProcessor stomps on our facet information.
-
   $solr_build->solrParams = array_replace_recursive($solr_build->solrParams, $facet_params);
 
   try {
@@ -322,10 +322,21 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   $parsed_url = parse_url(variable_get('islandora_solr_url', 'http://localhost:8080/solr'));
   $solr = new Apache_Solr_Service($parsed_url['host'], $parsed_url['port'], $parsed_url['path']);
 
-  // Create an escaped version of the facet search term, for use with
-  // the queries run below. Preserve the origional '$search_term' for
-  // use with the form's 'search_term' value below.
-  $search_term_escape = islandora_solr_lesser_escape($search_term);
+  // Create an escaped variable for the facet search term, for use with
+  // the following two functions below:
+  //
+  // islandora_solr_facet_pages_build_letterer()
+  // islandora_solr_facet_pages_build_results()
+  //
+  // We do this to preserve the original value of the search term, so that
+  // subsequent calls to drupal_get_form() are prepopulated with the user
+  // input text, and not the escaped string.
+  $search_term_escape = $search_term;
+  if (variable_get('islandora_solr_facet_pages_search_form', FALSE) &&
+    variable_get('islandora_solr_facet_pages_lucene_syntax_escape', TRUE)) {
+    $escape_charset = variable_get('islandora_solr_facet_pages_lucene_charset_default', "+, -, &&, ||, !, (, ), {, }, [, ], ^, ~, :");
+    $search_term_escape = islandora_solr_facet_query_escape($search_term, explode(',', $escape_charset));
+  }
 
   // Render letters.
   $letterer_arr = islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term_escape);
