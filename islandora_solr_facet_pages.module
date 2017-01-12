@@ -332,7 +332,7 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   $search_term_escape = $search_term;
   if (variable_get('islandora_solr_facet_pages_search_form', TRUE) &&
     variable_get('islandora_solr_facet_pages_lucene_syntax_escape', TRUE)) {
-    $escape_charset = variable_get('islandora_solr_facet_pages_lucene_charset_default', '+,-,&&,||,!,(,),{,},[,],^,",~,*,?,:');
+    $escape_charset = variable_get('islandora_solr_facet_pages_lucene_charset_default', '+,-,&&,||,!,(,),{,},[,],^,",~,*,?,:,\"');
     $search_term_escape = islandora_solr_facet_query_escape($search_term, explode(',', $escape_charset));
   }
 
