@@ -331,8 +331,8 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   // input text, and not the escaped string.
   $search_term_escape = $search_term;
   if (variable_get('islandora_solr_facet_pages_search_form', TRUE) &&
-    variable_get('islandora_solr_facet_pages_lucene_syntax_escape', TRUE)) {
-    $escape_charset = variable_get('islandora_solr_facet_pages_lucene_charset_default', '+,-,&&,||,!,(,),{,},[,],^,",~,*,?,:,\"');
+    variable_get('islandora_solr_facet_pages_lucene_syntax_escape', FALSE)) {
+    $escape_charset = variable_get('islandora_solr_facet_pages_lucene_regex_default', ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX);
     $search_term_escape = islandora_solr_facet_query_escape($search_term, explode(',', $escape_charset));
   }
 
