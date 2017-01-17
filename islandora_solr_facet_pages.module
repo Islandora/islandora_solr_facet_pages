@@ -296,7 +296,7 @@ function islandora_solr_facet_pages_pager($result_fields = array()) {
  */
 function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $search_term = NULL) {
   module_load_include('inc', 'islandora_solr', 'includes/utilities');
-  $search_term = islandora_solr_replace_slashes($search_term);
+  $search_term = islandora_solr_restore_slashes($search_term);
 
   // Get available fields from variable.
   $fields = variable_get('islandora_solr_facet_pages_fields_data', array());
@@ -499,6 +499,7 @@ function islandora_solr_facet_pages_search_form(array $form, array &$form_state,
  *   The Drupal form state.
  */
 function islandora_solr_facet_pages_search_form_submit(array $form, array &$form_state) {
+  module_load_include('inc', 'islandora_solr', 'includes/utilities');
   $form_state['redirect'] = implode('/', array(
     'browse',
     $form_state['storage']['vars']['path'],
