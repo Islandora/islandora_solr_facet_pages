@@ -118,11 +118,11 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
   $form['facet_pages']['islandora_solr_facet_pages_lucene_regex_default'] = array(
     '#type' => 'textfield',
     '#title' => t('Default regular expression evaluated on search term'),
-    '#default_value' => variable_get('islandora_solr_facet_pages_lucene_regex_default', ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX),
+    '#default_value' => variable_get('islandora_solr_facet_pages_lucene_regex_default', ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX_DEFAULT),
     '#description' => t(
       "The default regular expression, used to escape characters when found in search terms. Defaults to @regex",
       array(
-        '@regex' => ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX,
+        '@regex' => ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX_DEFAULT,
       )
     ),
     '#states' => array(
