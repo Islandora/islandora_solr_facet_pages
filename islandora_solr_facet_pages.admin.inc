@@ -104,6 +104,35 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
     '#description' => t('Display a search form on the facet page.'),
   );
 
+  $form['facet_pages']['islandora_solr_facet_pages_lucene_syntax_escape'] = array(
+    '#title' => t('Allow the use of lucene syntax string escaping on search terms'),
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('islandora_solr_facet_pages_lucene_syntax_escape', FALSE),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="islandora_solr_facet_pages_search_form"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
+  $form['facet_pages']['islandora_solr_facet_pages_lucene_escape_regex'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Default regular expression evaluated on search term'),
+    '#default_value' => variable_get('islandora_solr_facet_pages_lucene_regex_default', ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX_DEFAULT),
+    '#description' => t(
+      "The default regular expression, used to escape characters when found in search terms. Defaults to @regex",
+      array(
+        '@regex' => ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX_DEFAULT,
+      )
+    ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="islandora_solr_facet_pages_lucene_syntax_escape"]' => array('checked' => TRUE),
+        ':input[name="islandora_solr_facet_pages_search_form"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
   $form['buttons']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -210,6 +239,9 @@ function islandora_solr_facet_pages_admin_settings_submit($form, &$form_state) {
       variable_set('islandora_solr_facet_pages_limit', trim($form_state['values']['islandora_solr_facet_pages_limit']));
       variable_set('islandora_solr_facet_pages_facet_limit', $form_state['values']['islandora_solr_facet_pages_facet_limit']);
       variable_set('islandora_solr_facet_pages_search_form', $form_state['values']['islandora_solr_facet_pages_search_form']);
+
+      variable_set('islandora_solr_facet_pages_lucene_regex_default', $form_state['values']['islandora_solr_facet_pages_lucene_escape_regex']);
+      variable_set('islandora_solr_facet_pages_lucene_syntax_escape', $form_state['values']['islandora_solr_facet_pages_lucene_syntax_escape']);
 
       drupal_set_message(t('The configuration options have been saved.'));
       break;

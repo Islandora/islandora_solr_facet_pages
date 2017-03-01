@@ -295,6 +295,9 @@ function islandora_solr_facet_pages_pager($result_fields = array()) {
  *   Rendered page including letter pager, numerical pager and search results.
  */
 function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $search_term = NULL) {
+  module_load_include('inc', 'islandora_solr', 'includes/utilities');
+  $search_term = islandora_solr_restore_slashes($search_term);
+
   // Get available fields from variable.
   $fields = variable_get('islandora_solr_facet_pages_fields_data', array());
 
@@ -320,8 +323,24 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   $parsed_url = parse_url(variable_get('islandora_solr_url', 'http://localhost:8080/solr'));
   $solr = new Apache_Solr_Service($parsed_url['host'], $parsed_url['port'], $parsed_url['path']);
 
+  // Create an escaped variable for the facet search term, for use with
+  // the following two functions below:
+  //
+  // islandora_solr_facet_pages_build_letterer()
+  // islandora_solr_facet_pages_build_results()
+  //
+  // We do this to preserve the original value of the search term, so that
+  // subsequent calls to drupal_get_form() are prepopulated with the user
+  // input text, and not the escaped string.
+  $show_form = variable_get('islandora_solr_facet_pages_search_form', TRUE);
+  $escape_lucene = variable_get('islandora_solr_facet_pages_lucene_syntax_escape', FALSE);
+
+  $search_term_escape = ($show_form && $escape_lucene) ?
+    islandora_solr_facet_query_escape($search_term, variable_get('islandora_solr_facet_pages_lucene_regex_default', ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX_DEFAULT)) :
+    islandora_solr_lesser_escape($search_term);
+
   // Render letters.
-  $letterer_arr = islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term);
+  $letterer_arr = islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term_escape);
   $letterer = theme('islandora_solr_facet_pages_letterer', array(
     'facet_queries' => $letterer_arr['facet_queries'],
     'fq_map' => $letterer_arr['fq_map'],
@@ -330,10 +349,11 @@ function islandora_solr_facet_pages_callback($path = NULL, $prefix = NULL, $sear
   ));
 
   // Collect results.
-  $result_fields = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $search_term);
+  $result_fields = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix, $search_term_escape);
   // Collect results with lowercase.
   $prefix_lower = strtolower($prefix);
-  $result_fields_lower = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix_lower, $search_term);
+  $result_fields_lower = islandora_solr_facet_pages_build_results($solr, $solr_field, $prefix_lower, $search_term_escape);
+
   // Merge uppercase with lowercase.
   $result_fields = $result_fields + $result_fields_lower;
 
@@ -479,5 +499,11 @@ function islandora_solr_facet_pages_search_form(array $form, array &$form_state,
  *   The Drupal form state.
  */
 function islandora_solr_facet_pages_search_form_submit(array $form, array &$form_state) {
-  drupal_goto("browse/{$form_state['storage']['vars']['path']}/{$form_state['storage']['vars']['prefix']}/{$form_state['values']['search_term']}");
+  module_load_include('inc', 'islandora_solr', 'includes/utilities');
+  $form_state['redirect'] = implode('/', array(
+    'browse',
+    $form_state['storage']['vars']['path'],
+    $form_state['storage']['vars']['prefix'],
+    islandora_solr_replace_slashes($form_state['values']['search_term']),
+  ));
 }
