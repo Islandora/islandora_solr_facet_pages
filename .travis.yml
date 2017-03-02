@@ -22,6 +22,9 @@ before_install:
   - ln -s $TRAVIS_BUILD_DIR sites/all/modules/islandora_solr_facet_pages
   - ln -s $HOME/islandora_solr_search sites/all/modules/islandora_solr_search
   - drush en --yes islandora_solr_facet_pages
+before_script:
+  # Mysql might time out for long tests, increase the wait timeout.
+  - mysql -e 'SET @@GLOBAL.wait_timeout=1200'
 script:
   - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_solr_facet_pages
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer islandora_solr_facet_pages
