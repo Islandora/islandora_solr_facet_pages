@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Islandora Solr facet pages module allows you to browse through solr facet data through an alphabetically split up navigation interface. You can set multiple pages for different solr fields to facet on.
+The Islandora Solr Facet Pages module creates an alphabetical "A to Z" browse from metadata indexed in Solr. The "facets" are the fields that Solr will search in to build the A-to-Z browse. You can set up multiple A-to-Z pages.
 
 ## Requirements
 
@@ -18,7 +18,7 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Configuration
 
-Configure facet pages, set 'Results per page', and 'Maxiumum searchable facet values' in Administration » Islandora » Solr index » Solr index (admin/islandora/search/islandora_solr/facet_pages). Pages are located at browse/{your-path} and a block is available which contains a list of links to all configured facet pages.
+To configure facet pages, set 'Results per page', and 'Maxiumum searchable facet values' go to Administration » Islandora » Solr index » Facet Pages (admin/islandora/search/islandora_solr/facet_pages). The browse pages are located at browse/{your-path}.  In Administration >> Structure >> Blocks there is an Islandora Solr facet pages block available which contains a list of links to all configured facet pages.
 
 ![Configuration](https://camo.githubusercontent.com/429ac52fd3f2f34f912b64dec3f6a3f87610e7ad/687474703a2f2f692e696d6775722e636f6d2f736c594e4c65712e706e67)
 
