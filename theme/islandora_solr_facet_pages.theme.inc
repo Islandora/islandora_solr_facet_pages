@@ -9,9 +9,9 @@
  */
 
 /**
- * Implements hook_preprocess().
+ * Implements template_preprocess_HOOK().
  */
-function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_results(&$variables) {
+function template_solr_facet_pages_preprocess_islandora_solr_facet_pages_results(&$variables) {
   // Add template suggestion based on path name.
   $variables['template_files'][] = 'islandora-solr-facet-pages-results--' . $variables['path'];
 }
