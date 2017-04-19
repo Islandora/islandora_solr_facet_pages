@@ -18,12 +18,12 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Configuration
 
-To configure facet pages, set 'Results per page', and 'Maxiumum searchable facet values' go to Administration » Islandora » Solr index » Facet Pages (admin/islandora/search/islandora_solr/facet_pages). The browse pages are located at browse/{your-path}. In Administration >> Structure >> Blocks there is an Islandora Solr facet pages block available which contains a list of links to all configured facet pages.
+To configure facet pages, set 'Results per page', and 'Maxiumum searchable facet values' go to Administration » Islandora » Solr index » Facet Pages (admin/islandora/search/islandora_solr/facet_pages). The browse pages are located at browse/{your-path}.  In Administration >> Structure >> Blocks there is an Islandora Solr facet pages block available which contains a list of links to all configured facet pages.
 
 ![Configuration](https://cloud.githubusercontent.com/assets/2052902/25148002/6e9ece5c-2447-11e7-8218-b468558d16b8.png)
 
-## Notes
-
+## Note
+    
 * When `Facet search form` is enabled, a text field (e.g. *_t or *_mt) must be used otherwise the search will not work. Additionally facets are presented in their raw, tokenized text form, which has an adverse affect on the display.
 
 ### Theming
