@@ -22,7 +22,9 @@ To configure facet pages, set 'Results per page', and 'Maxiumum searchable facet
 
 ![Configuration](https://cloud.githubusercontent.com/assets/2052902/25148002/6e9ece5c-2447-11e7-8218-b468558d16b8.png)
 
-**Note:** when `Facet search form` is enabled, a text field (e.g. *_t or *_mt) must be used otherwise the search will not work. Additionally facets are presented in their raw, tokenized text form, which has an adverse affect on the display.
+## Notes
+
+* When `Facet search form` is enabled, a text field (e.g. *_t or *_mt) must be used otherwise the search will not work. Additionally facets are presented in their raw, tokenized text form, which has an adverse affect on the display.
 
 ### Theming
 
