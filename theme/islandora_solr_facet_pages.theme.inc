@@ -9,17 +9,17 @@
  */
 
 /**
- * Implements hook_preprocess().
+ * Implements template_preprocess_HOOK().
  */
-function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_results(&$variables) {
+function template_preprocess_islandora_solr_facet_pages_results(&$variables) {
   // Add template suggestion based on path name.
   $variables['template_files'][] = 'islandora-solr-facet-pages-results--' . $variables['path'];
 }
 
 /**
- * Implements hook_preprocess().
+ * Implements template_preprocess_HOOK().
  */
-function islandora_solr_facet_pages_preprocess_islandora_solr_facet_pages_wrapper(&$variables) {
+function template_preprocess_islandora_solr_facet_pages_wrapper(&$variables) {
 
   $total = $variables['pager_data']['total'];
   $from = $variables['pager_data']['offset'] + 1;
