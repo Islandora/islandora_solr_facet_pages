@@ -504,6 +504,6 @@ function islandora_solr_facet_pages_search_form_submit(array $form, array &$form
     'browse',
     $form_state['storage']['vars']['path'],
     $form_state['storage']['vars']['prefix'],
-    islandora_solr_replace_slashes($form_state['values']['search_term']),
+    islandora_solr_replace_slashes(trim($form_state['values']['search_term'])),
   ));
 }
