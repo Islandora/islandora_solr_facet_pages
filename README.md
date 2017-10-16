@@ -39,7 +39,7 @@ islandora-solr-facet-pages-results--{your-path}.tpl.php
 
 ## Documentation
 
-Further documentation for this module is available at [our wiki](https://wiki.duraspace.org/display/ISLANDORA/Islandora+Solr+Facet+Pages).
+This module's documentation is also available at [our wiki](https://wiki.duraspace.org/display/ISLANDORA/Islandora+Solr+Facet+Pages).
 
 ## Troubleshooting/Issues
 
