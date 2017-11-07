@@ -3,5 +3,5 @@ description = Creates pages with alphabetical facet buckets
 dependencies[] = islandora_solr
 configure = admin/islandora/search/islandora_solr/facet_pages
 package = Islandora
-version = 7.x-1.10RC2
+version = 7.x-1.10
 core = 7.x
