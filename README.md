@@ -2,7 +2,11 @@
 
 ## Introduction
 
-The Islandora Solr Facet Pages module creates an alphabetical "A to Z" browse from metadata indexed in Solr. The "facets" are the fields that Solr will search in to build the A-to-Z browse. You can set up multiple A-to-Z pages.
+Islandora Solr Facet Pages provides alphabetical "A to Z" browse lists from metadata indexed in Solr. You can set up multiple A-to-Z browse lists from different facets (Solr fields). For example, this can be used to list all authors or all subject headings present in an Islandora repository.
+
+Each facet page appears at _/browse/my-configured-path_.
+
+![Example](https://user-images.githubusercontent.com/1943338/32703595-9ef0113a-c7ce-11e7-9d38-9e616ae69870.png)
 
 ## Requirements
 
@@ -18,24 +22,55 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Configuration
 
-To configure facet pages, set 'Results per page', and 'Maxiumum searchable facet values' go to Administration » Islandora » Solr index » Facet Pages (admin/islandora/search/islandora_solr/facet_pages). The browse pages are located at browse/{your-path}.  In Administration >> Structure >> Blocks there is an Islandora Solr facet pages block available which contains a list of links to all configured facet pages.
+Configure facet pages at Administration » Islandora » Solr index » Facet Pages (_/admin/islandora/search/islandora_solr/facet_pages_).
 
-![Configuration](https://cloud.githubusercontent.com/assets/2052902/25194330/1c9b6d7e-2508-11e7-89f1-bc70eccd95ae.png)
+![Configuration](https://user-images.githubusercontent.com/1943338/32705823-6998d8f8-c7ee-11e7-8238-c801f56cffb7.png)
+
+### Facet Pages
+
+Each facet page requires a solr field (the facet) and a path (so the page will be at _/browse/{path}_). The label, if present, is set as the Drupal page title.
+
+When choosing Solr fields for facets, you probably want to select _string_ fields. This depends on your Solr config, but often this includes fields ending in \*_s or \*_ms. Strings  will display as full multi-word phrases. Text fields (often \*_mt or the dc.* fields) will show raw parsed text (individual words or parts of words) and is usually not what is desired.
+
+If you need to configure more pages than the form provides, save the full configuration form and more blank fields will automatically appear.
+
+### Results per page
+
+When the list of facets is long, it can be split over multiple pages using a pager. This variable sets the page size.
+
+### Maximum facet values
+
+Set the maximum number of facet values to return, period. If this value is less than the number of values that exist in Solr, they will be pruned arbitrarily. However, lowering this value may improve page loading speeds.
+
+### Facet search form
+
+Provide the user with a search form to search within these facets.
+
+Search is case-sensitive and must match the entire facet value. Therefore, search does not work well on string fields, unless the user makes use of wildcards. For example, `*Alice*` would  match that term anywhere within the string, while `Alice` would only match a full string value of "Alice".
+
+This search form works more intuitively on text (e.g. *_mt) facets, but as mentioned above, raw tokenized values are generally _not_ what is desired for display.
 
 
 ## Notes
 
-* When `Facet search form` is enabled, a text field (e.g. *_t or *_mt) must be used otherwise the search will not work. Additionally facets are presented in their raw, tokenized text form, which has an adverse affect on the display.
+### Islandora Solr Facet Pages block
 
-### Theming
+This module provides a block named "Islandora Solr facet pages" that can be configured in Block settings (Administration >> Structure >> Blocks). It contains a list of links to all configured facet pages.
 
-There are template files for the entire page and the results list. The alphabetical pager uses a theme function.
+### Theming the Facet Pages
+
+This module provides template files for the entire page (islandora-solr-facet-pages-wrapper.tpl.php) and the results list (islandora-solr-facet-pages-results.tpl.php). The alphabetical pager uses a theme function.
 
 Template files can be overridden by a theme by copying the template file from the modules folder into the theme folder. You can override a theme per defined facet page by appending the path value to the template file. If you do, make sure to copy the original template file to your theme as well.
 
 eg:
-islandora-solr-facet-pages-results.tpl.php
-islandora-solr-facet-pages-results--{your-path}.tpl.php
+```
+sites/all/themes/{your-theme-folder}
+├── {other files}
+├── islandora-solr-facet-pages-results.tpl.php
+├── islandora-solr-facet-pages-results--{your-path}.tpl.php
+└── islandora-solr-facet-pages-wrapper.tpl.php
+```
 
 ## Documentation
 
