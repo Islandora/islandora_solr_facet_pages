@@ -23,7 +23,7 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
   $form['facet_pages']['islandora_solr_facet_pages_fields_data'] = array(
     '#type' => 'item',
     '#title' => t('Facet pages'),
-    '#description' => t('Configure facet pages. Save settings for additional empty fields.'),
+    '#description' => t('Values in the selected solr field will be browsable (alphabetically) at <i>/browse/PATH</i>. <br />Save settings to access additional empty fields.'),
     '#tree' => TRUE,
     '#theme' => 'islandora_solr_facet_pages_admin_table',
   );
@@ -65,17 +65,17 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
     '#title' => t('Results per page'),
     '#size' => 5,
     '#default_value' => variable_get('islandora_solr_facet_pages_limit', 25),
-    '#description' => t('The amount of values returned per page. Leave empty to return all fields'),
+    '#description' => t('Use a pager to display this many values per page.'),
   );
 
   // Limit maximum results to be returned.
   $form['facet_pages']['islandora_solr_facet_pages_facet_limit'] = array(
     '#type' => 'select',
-    '#title' => t('Maximum searchable facet values'),
+    '#title' => t('Maximum facet values'),
     '#multiple' => FALSE,
     '#options' => array(),
     '#default_value' => variable_get('islandora_solr_facet_pages_facet_limit', 100000),
-    '#description' => t('The maximum amount of values returned per page. A higher number cause slow page loads.'),
+    '#description' => t('The maximum number of values returned. A higher number can cause slower page loads.'),
   );
   $options = array(
     1000,
@@ -99,13 +99,12 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
   // Display search form on facet page.
   $form['facet_pages']['islandora_solr_facet_pages_search_form'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Facet search form'),
+    '#title' => t('Display a search form on the facet page.'),
     '#default_value' => variable_get('islandora_solr_facet_pages_search_form', FALSE),
-    '#description' => t('Display a search form on the facet page.'),
   );
 
   $form['facet_pages']['islandora_solr_facet_pages_lucene_syntax_escape'] = array(
-    '#title' => t('Allow the use of lucene syntax string escaping on search terms'),
+    '#title' => t('Use Lucene syntax string escaping on search terms'),
     '#type' => 'checkbox',
     '#default_value' => variable_get('islandora_solr_facet_pages_lucene_syntax_escape', FALSE),
     '#states' => array(
@@ -117,10 +116,10 @@ function islandora_solr_facet_pages_admin_settings($form, &$form_state) {
 
   $form['facet_pages']['islandora_solr_facet_pages_lucene_escape_regex'] = array(
     '#type' => 'textfield',
-    '#title' => t('Default regular expression evaluated on search term'),
+    '#title' => t('Regular expression evaluated on search term'),
     '#default_value' => variable_get('islandora_solr_facet_pages_lucene_regex_default', ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX_DEFAULT),
     '#description' => t(
-      "The default regular expression, used to escape characters when found in search terms. Defaults to @regex",
+      "Used to escape special characters when found in search terms. Defaults to @regex",
       array(
         '@regex' => ISLANDORA_SOLR_QUERY_FACET_LUCENE_ESCAPE_REGEX_DEFAULT,
       )
@@ -208,11 +207,11 @@ function islandora_solr_facet_pages_admin_settings_validate($form, &$form_state)
     $limit = trim($limit);
     // Check numeric.
     if (!is_numeric($limit)) {
-      form_set_error('islandora_solr_facet_pages_limit', t('Exposed results must be numeric.'));
+      form_set_error('islandora_solr_facet_pages_limit', t('Results per page must be numeric.'));
     }
     // Check for no decimals.
     if (strpos($limit, '.')) {
-      form_set_error('islandora_solr_facet_pages_limit', t('Exposed results cannot be decimals.'));
+      form_set_error('islandora_solr_facet_pages_limit', t('Results per page cannot include decimals.'));
     }
   }
 }
