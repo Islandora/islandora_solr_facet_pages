@@ -127,11 +127,12 @@ function islandora_solr_facet_pages_block_view($delta = '') {
  *   Term to search facets with.
  *
  * @return array
- *   Returns array containing facet_queries and a filter query map. Both arrays
- *   are used to theme the alphabetical pager. The fq_map contains an array
- *   which maps a filter query to a prefix. eg: solr_field:A* => A.
- *   Facet_queries are the solr results wich maps the filter query to the bucket
- *   size, eg: solr_field:A* => 1234
+ *   An associative array with elements 'facet_queries' and 'fq_map'. Both
+ *   arrays are used to theme the alphabetical pager.
+ *   'fq_map' (filter query map) is an associative array which maps a filter
+ *   query to a prefix, eg: 'solr_field:A*' => 'A'.
+ *   'facet_queries' is an associative array which maps the filter query to the
+ *   bucket size, eg: 'solr_field:A*' => 1234.
  */
 function islandora_solr_facet_pages_build_letterer($solr, $solr_field, $search_term = NULL) {
   $solr_build = new IslandoraSolrQueryProcessor();
