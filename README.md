@@ -6,7 +6,7 @@ Islandora Solr Facet Pages provides alphabetical "A to Z" browse lists from meta
 
 Each facet page appears at _/browse/my-configured-path_.
 
-![Example](docs/solr-facet-page-example.png)
+![Example](https://user-images.githubusercontent.com/1943338/32703595-9ef0113a-c7ce-11e7-9d38-9e616ae69870.png)
 
 ## Requirements
 
