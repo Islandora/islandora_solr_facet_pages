@@ -24,7 +24,7 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 Configure facet pages at Administration » Islandora » Solr index » Facet Pages (_/admin/islandora/search/islandora_solr/facet_pages_).
 
-![Configuration](https://user-images.githubusercontent.com/1943338/32705823-6998d8f8-c7ee-11e7-8238-c801f56cffb7.png)
+![Configuration](docs/solr-facet-page-example.png)
 
 ### Facet Pages
 
