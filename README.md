@@ -14,7 +14,7 @@ This module requires the following modules/libraries:
 
 * [Islandora](https://github.com/islandora/islandora)
 * [Tuque](https://github.com/islandora/tuque)
-* [Islandora Solr Search](https://github.com/Islandora/islandora_solr_search)
+* [Islandora Solr](https://github.com/Islandora/islandora_solr_search)
 
 ## Installation
 
@@ -24,7 +24,7 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 Configure facet pages at Administration » Islandora » Solr index » Facet Pages (_/admin/islandora/search/islandora_solr/facet_pages_).
 
-![Configuration](https://user-images.githubusercontent.com/1943338/32705823-6998d8f8-c7ee-11e7-8238-c801f56cffb7.png)
+![Configuration](docs/solr-facet-page-example.png)
 
 ### Facet Pages
 
@@ -55,7 +55,7 @@ This search form works more intuitively on text (e.g. *_mt) facets, but as menti
 
 ### Islandora Solr Facet Pages block
 
-This module provides a block named "Islandora Solr facet pages" that can be configured in Block settings (Administration >> Structure >> Blocks). It contains a list of links to all configured facet pages.
+This module provides a block named "Islandora Solr facet pages" that can be configured in Block settings (Administration » Structure » Blocks). It contains a list of links to all configured facet pages.
 
 ### Theming the Facet Pages
 
@@ -63,7 +63,7 @@ This module provides template files for the entire page (islandora-solr-facet-pa
 
 Template files can be overridden by a theme by copying the template file from the modules folder into the theme folder. You can override a theme per defined facet page by appending the path value to the template file. If you do, make sure to copy the original template file to your theme as well.
 
-eg:
+The folder for a theme that customizes the Solr facet pages layout would look like this:
 ```
 sites/all/themes/{your-theme-folder}
 ├── {other files}
