@@ -87,7 +87,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 Current maintainers:
 
-* [Nelson Hart](https://github.com/nhart)
+* [Danny Lamb](https://github.com/dannylamb)
 
 ## Development
 
