@@ -3,5 +3,5 @@ description = Creates alphabetical browse lists of facet values.
 dependencies[] = islandora_solr
 configure = admin/islandora/search/islandora_solr/facet_pages
 package = Islandora
-version = 7.x-dev
+version = 7.x-1.13
 core = 7.x
